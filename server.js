@@ -1,5 +1,6 @@
 var http = require('http');
 var fs = require('fs');
+var querystring = require('querystring');
 var server = http.createServer(handler);
 
 var message1 = 'This is the node url';
@@ -16,6 +17,21 @@ function handler(request, response){
       }
       response.end(file);
     });
+  } else if(endpoint === '/create-post') {
+
+    response.writeHead(302, {"Location": "/"})
+
+    var allTheData = '';
+    request.on('data', function(chunkOfData) {
+      allTheData += chunkOfData;
+    });
+
+    request.on('end', function() {
+      var convertedData = querystring.parse(allTheData);
+      console.log(convertedData);
+      response.end();
+    });
+
   } else if (endpoint === '/node') {
       response.writeHead(200, {"Content-Type": "text/html"});
       response.write(message1);
@@ -37,9 +53,14 @@ function handler(request, response){
         response.end(file);
       });
   }
+
+
 }
 
-// var server = http.createServer(handler);
+
+
+
+
 
 server.listen(3000, function() {
   console.log('Server is listening on port 3000. Ready to accept requests!');
