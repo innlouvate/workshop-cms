@@ -1,11 +1,20 @@
 var http = require('http');
+var fs = require('fs');
 
-var message = 'I really fucking hate merging on Github';
+var message1 = 'This is the node url';
+var message2 = 'This is the girls url';
 
 function handler(request, response){
- response.writeHead(200, {"Content-Type": "text/html"});
- response.write(message);
- response.end();
+  if(request.url === '/') {
+    response.writeHead(200, {"Content-Type": "text/html"});
+    fs.readFile(__dirname + '/public/index.html', function(error, file) {
+      if(error) {
+        console.log(error);
+        return;
+      }
+      response.end(file);
+    });
+  }
 }
 
 var server = http.createServer(handler);
